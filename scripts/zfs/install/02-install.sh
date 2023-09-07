@@ -60,9 +60,9 @@ EOF
 
 # Prepare locales and keymap
 print "Prepare locales and keymap"
-echo "KEYMAP=fr" > /mnt/etc/vconsole.conf
-sed -i 's/#\(fr_FR.UTF-8\)/\1/' /mnt/etc/locale.gen
-echo 'LANG="fr_FR.UTF-8"' > /mnt/etc/locale.conf
+echo "KEYMAP=en" > /mnt/etc/vconsole.conf
+sed -i 's/#\(en_US.UTF-8\)/\1/' /mnt/etc/locale.gen
+echo 'LANG="en_US.UTF-8"' > /mnt/etc/locale.conf
 
 # Prepare initramfs
 print "Prepare initramfs"
@@ -124,8 +124,8 @@ EOSF
   mkinitcpio -P
 
   # Install ZFSBootMenu and deps
-  git clone --depth=1 https://github.com/zbm-dev/zfsbootmenu/ /tmp/zfsbootmenu
-  pacman -S cpanminus kexec-tools fzf util-linux --noconfirm
+  git clone --depth=1 --branch v2.2.0 https://github.com/zbm-dev/zfsbootmenu/ /tmp/zfsbootmenu
+  pacman -S cpanminus kexec-tools less fzf util-linux --noconfirm
   cd /tmp/zfsbootmenu
   make
   make install
@@ -245,14 +245,14 @@ Kernel:
 EOF
 
 # Set cmdline
-zfs set org.zfsbootmenu:commandline="rw quiet nowatchdog rd.vconsole.keymap=fr" zroot/ROOT/"$root_dataset"
+zfs set org.zfsbootmenu:commandline="rw quiet nowatchdog rd.vconsole.keymap=en" zroot/ROOT/"$root_dataset"
 
 # Generate ZBM
 print 'Generate zbm'
 arch-chroot /mnt /bin/bash -xe <<"EOF"
 
   # Export locale
-  export LANG="fr_FR.UTF-8"
+  export LANG="en_US.UTF-8"
 
   # Generate zfsbootmenu
   generate-zbm
