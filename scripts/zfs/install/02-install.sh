@@ -69,7 +69,7 @@ print "Prepare initramfs"
 cat > /mnt/etc/mkinitcpio.conf <<"EOF"
 MODULES=(i915 intel_agp)
 BINARIES=()
-FILES=(/etc/zfs/zroot.key)
+FILES=()
 HOOKS=(base udev autodetect modconf block keyboard keymap zfs filesystems)
 COMPRESSION="zstd"
 EOF
@@ -84,7 +84,6 @@ EOF
 print "Copy ZFS files"
 cp /etc/hostid /mnt/etc/hostid
 cp /etc/zfs/zpool.cache /mnt/etc/zfs/zpool.cache
-cp /etc/zfs/zroot.key /mnt/etc/zfs
 
 ### Configure username
 print 'Set your username'
