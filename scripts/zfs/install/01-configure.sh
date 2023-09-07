@@ -132,7 +132,6 @@ export_pool () {
 import_pool () {
     print "Import zpool"
     zpool import -d /dev/disk/by-id -R /mnt zroot -N -f
-    zfs load-key zroot
 }
 
 mount_system () {
