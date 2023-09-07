@@ -72,15 +72,6 @@ partition () {
     mkfs.vfat "$EFI"
 }
 
-zfs_passphrase () {
-    # Generate key
-    print "Set ZFS passphrase"
-    read -r -p "> ZFS passphrase: " -s pass
-    echo
-    echo "$pass" > /etc/zfs/zroot.key
-    chmod 000 /etc/zfs/zroot.key
-}
-
 create_pool () {
     # ZFS part
     ZFS="$DISK-part3"
@@ -94,9 +85,6 @@ create_pool () {
                  -O relatime=on                           \
                  -O xattr=sa                              \
                  -O dnodesize=legacy                      \
-                 -O encryption=aes-256-gcm                \
-                 -O keyformat=passphrase                  \
-                 -O keylocation=file:///etc/zfs/zroot.key \
                  -O normalization=formD                   \
                  -O mountpoint=none                       \
                  -O canmount=off                          \
@@ -174,7 +162,6 @@ print "Is this the first install or a second install to dualboot ?"
 install_reply=$(menu first dualboot)
 
 select_disk
-zfs_passphrase
 
 # If first install
 if [[ $install_reply == "first" ]]

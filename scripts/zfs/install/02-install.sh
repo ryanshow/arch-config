@@ -224,7 +224,7 @@ MODULES=()
 BINARIES=()
 FILES=()
 HOOKS=(base udev autodetect modconf block keyboard keymap)
-COMPRESSION="zstd"
+COMPRESSION="cat"
 EOF
 
 cat > /mnt/etc/zfsbootmenu/config.yaml <<EOF
