@@ -111,6 +111,7 @@ Server = http://mirror.sum7.eu/archlinux/archzfs/archzfs/x86_64
 Server = https://mirror.biocrafting.net/archlinux/archzfs/archzfs/x86_64
 EOSF
   pacman -Syu --noconfirm zfs-dkms zfs-utils
+  pacman -U --noconfirm https://archive.archlinux.org/packages/s/systemd/systemd-254.1-1-x86_64.pkg.tar.zst
 
   # Sync clock
   hwclock --systohc
@@ -214,48 +215,19 @@ systemctl enable zfs-zed.service --root=/mnt
 # Configure zfsbootmenu
 mkdir -p /mnt/efi/EFI/ZBM
 
+arch-chroot /mnt /bin/bash -xe <<EOF
+
+EOF
+
 # Generate zfsbootmenu efi
 print 'Configure zfsbootmenu'
 # https://github.com/zbm-dev/zfsbootmenu/blob/master/etc/zfsbootmenu/mkinitcpio.conf
 
-cat > /mnt/etc/zfsbootmenu/mkinitcpio.conf <<"EOF"
-MODULES=()
-BINARIES=()
-FILES=()
-HOOKS=(base udev autodetect modconf block keyboard keymap)
-COMPRESSION="cat"
-EOF
 
-cat > /mnt/etc/zfsbootmenu/config.yaml <<EOF
-Global:
-  ManageImages: true
-  BootMountPoint: /efi
-  InitCPIO: true
-
-Components:
-  Enabled: false
-EFI:
-  ImageDir: /efi/EFI/ZBM
-  Versions: false
-  Enabled: true
-Kernel:
-  CommandLine: ro quiet loglevel=0 zbm.import_policy=hostid
-  Prefix: vmlinuz
-EOF
 
 # Set cmdline
 zfs set org.zfsbootmenu:commandline="rw quiet nowatchdog rd.vconsole.keymap=en" zroot/ROOT/"$root_dataset"
 
-# Generate ZBM
-print 'Generate zbm'
-arch-chroot /mnt /bin/bash -xe <<"EOF"
-
-  # Export locale
-  export LANG="en_US.UTF-8"
-
-  # Generate zfsbootmenu
-  generate-zbm
-EOF
 
 # Set DISK
 if [[ -f /tmp/disk ]]
